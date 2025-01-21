@@ -121,11 +121,42 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, Math.
 const api = {
   // Obtener todos los restaurantes
   list: async (): Promise<Restaurant[]> => {
-    // Simular un delay en la respuesta de la API
-    await sleep(750);
+    // Obtenemos la información de Google Sheets en formato texto y la dividimos por líneas, nos saltamos la primera línea porque es el encabezado
+    const [, ...data] = await fetch(
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vQDvNBNmtGcTGxPu8tmEtAPBzcfFS-n8mPF5qLIcxBznwFn5gyUewGEIcT6tnXOBWqQ5cGqUVBDx3Ov/pub?output=csv",
+      {
+        cache: "no-store",
+      },
+    )
+      .then((res) => res.text())
+      .then((text) => text.split("\n"));
 
+    // Convertimos cada línea en un objeto Restaurant, asegúrate de que los campos no posean `,`
+    const restaurants: Restaurant[] = data.map((row) => {
+      const [id, name, description, address, score, ratings, image] = row.split(",");
+
+      return {
+        id,
+        name,
+        description,
+        address,
+        score: Number(score),
+        ratings: Number(ratings),
+        image,
+      };
+    });
+
+    // Lo retornamos
     return restaurants;
   },
+
+  // Obtener un restaurante específico por su ID desde la API no usando Google Sheets sino de nuestra propia API
+  // list: async (): Promise<Restaurant[]> => {
+  //   // Simular un delay en la respuesta de la API
+  //   await sleep(750);
+
+  //   return restaurants;
+  // },
   // Obtener un restaurante específico por su ID
   fetch: async (id: Restaurant["id"]): Promise<Restaurant> => {
     // Simular un delay en la respuesta de la API

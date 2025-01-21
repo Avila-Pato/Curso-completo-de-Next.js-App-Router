@@ -12,6 +12,15 @@ export async function generateMetadata({params}: {params: Promise<{id: string}>}
   };
 }
 
+// El renderizado estático es muy útil para páginas que no cambian con frecuencia o no incluyen información proveniente de la petición.
+export async function generateStaticParams() {
+  const restaurants = await api.list();
+
+  return restaurants.map((restaurant) => ({
+    id: restaurant.id,
+  }));
+}
+
 export default async function RestaurantPage({params}: {params: Promise<{id: string}>}) {
   const {id} = await params;
   const restaurant = await api.fetch(id);

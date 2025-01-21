@@ -124,9 +124,6 @@ const api = {
     // Obtenemos la información de Google Sheets en formato texto y la dividimos por líneas, nos saltamos la primera línea porque es el encabezado
     const [, ...data] = await fetch(
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vQDvNBNmtGcTGxPu8tmEtAPBzcfFS-n8mPF5qLIcxBznwFn5gyUewGEIcT6tnXOBWqQ5cGqUVBDx3Ov/pub?output=csv",
-      {
-        cache: "no-store",
-      },
     )
       .then((res) => res.text())
       .then((text) => text.split("\n"));

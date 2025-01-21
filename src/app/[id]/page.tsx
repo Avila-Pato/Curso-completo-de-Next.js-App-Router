@@ -1,4 +1,16 @@
+import Link from "next/link";
+
 import api from "@/api";
+
+export async function generateMetadata({params}: {params: Promise<{id: string}>}) {
+  const {id} = await params;
+  const restaurant = await api.fetch(id);
+
+  return {
+    title: `${restaurant.name} - Restaurancy`,
+    description: restaurant.description,
+  };
+}
 
 export default async function RestaurantPage({params}: {params: Promise<{id: string}>}) {
   const {id} = await params;
@@ -20,6 +32,9 @@ export default async function RestaurantPage({params}: {params: Promise<{id: str
         </small>
       </h2>
       <p className="opacity-90">{restaurant.description}</p>
+      <Link className="font-bold" href="/">
+        Volver
+      </Link>
     </article>
   );
 }
